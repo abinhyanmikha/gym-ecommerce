@@ -1,16 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   products: [
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: "Product",
         required: true,
       },
       name: String,
@@ -31,11 +31,19 @@ const OrderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'paid', 'failed'],
-    default: 'pending',
+    enum: ["pending", "paid", "failed"],
+    default: "pending",
+  },
+  deliveryStatus: {
+    type: String,
+    enum: ["pending", "in_progress", "delivered"],
+    default: "pending",
   },
   esewaRefId: {
     type: String,
+  },
+  paymentDetails: {
+    type: Object,
   },
   createdAt: {
     type: Date,
@@ -43,4 +51,4 @@ const OrderSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.models.Order || mongoose.model('Order', OrderSchema);
+export default mongoose.models.Order || mongoose.model("Order", OrderSchema);

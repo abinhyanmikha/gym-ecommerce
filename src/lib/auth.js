@@ -7,7 +7,7 @@ export async function signToken(payload) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('1d')
+    .setExpirationTime('7d')
     .sign(key);
 }
 
@@ -18,16 +18,29 @@ export async function verifyToken(token) {
     });
     return payload;
   } catch (error) {
+    console.error("Token verification failed:", error);
     return null;
   }
 }
 
 export async function getSession(request) {
+    // Check cookies first
     const cookieHeader = request.headers.get('cookie');
-    if (!cookieHeader) return null;
+    if (cookieHeader) {
+      const token = cookieHeader.split(';').find(c => c.trim().startsWith('token='))?.split('=')[1];
+      if (token) {
+        const payload = await verifyToken(token);
+        if (payload) return payload;
+      }
+    }
     
-    const token = cookieHeader.split(';').find(c => c.trim().startsWith('token='))?.split('=')[1];
-    if (!token) return null;
+    // Check Authorization header as fallback (if you use Bearer tokens)
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      const payload = await verifyToken(token);
+      if (payload) return payload;
+    }
 
-    return await verifyToken(token);
+    return null;
 }

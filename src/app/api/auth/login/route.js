@@ -32,7 +32,7 @@ export async function POST(request) {
       );
     }
 
-    const token = await signToken({ id: user._id, role: user.role });
+    const token = await signToken({ id: user._id.toString(), role: user.role });
 
     const response = NextResponse.json(
       {
@@ -51,7 +51,7 @@ export async function POST(request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 86400, // 1 day
+      maxAge: 7 * 24 * 60 * 60, // 7 days
       path: "/",
     });
 
