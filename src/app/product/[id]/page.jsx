@@ -6,12 +6,14 @@ import { ShoppingCart, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/components/AuthProvider';
+import { useCart } from '@/context/CartContext';
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -100,15 +102,16 @@ export default function ProductDetailsPage() {
             </div>
             
             <button 
+              onClick={() => addToCart(product)}
               disabled={product.stock === 0}
-              className={`w-full py-4 rounded-lg flex items-center justify-center gap-2 text-lg font-semibold transition-all ${
-                product.stock > 0 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center transition-colors ${
+                product.stock === 0 
+                  ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
+                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
               }`}
             >
-              <ShoppingCart size={24} />
-              {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+              <ShoppingCart size={24} className="mr-2" />
+              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
             
             {user?.role === 'admin' && (
