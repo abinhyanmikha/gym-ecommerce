@@ -370,7 +370,7 @@ export default function AdminPage() {
               : "bg-white text-gray-600 hover:bg-gray-100"
           }`}
         >
-          <UserIcon size={20} /> My Profile & Orders
+          <UserIcon size={30} /> My Profile & Orders
         </button>
       </div>
 
